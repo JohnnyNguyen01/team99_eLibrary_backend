@@ -30,3 +30,14 @@ export default class User implements IUser {
   @IsNotEmpty()
   isAdmin?: boolean;
 }
+
+/**
+ * User Type
+ */
+export type UserType = {
+  uid?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  isAdmin?: boolean;
+};

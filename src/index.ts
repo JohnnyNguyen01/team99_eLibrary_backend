@@ -1,11 +1,13 @@
 /**
  * Required External Modules
  */
-
+import * as firestore from "@google-cloud/firestore";
 import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+
+import { addUser, usersRouter } from "./routes/users.router";
 
 dotenv.config();
 
@@ -27,8 +29,15 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-firebaseAdmin.initializeApp({ credential: process.env.TEAM99_GCP_KEY });
-export const db = firebaseAdmin.firestore();
+// test user-service
+app.use("/addUser", addUser);
+/**
+ *  Firestore initialization
+ */
+firebaseAdmin.initializeApp({ Credential: process.env.TEAM99_GCP_KEY });
+export const db: FirebaseFirestore.Firestore = firebaseAdmin.firestore();
+db.settings({ timestampsInSnapshots: true });
+export default db;
 
 /**
  * Server Activations
