@@ -9,6 +9,9 @@ import helmet from "helmet";
 
 import { addUser, usersRouter } from "./routes/users.router";
 
+import { errorHandler } from "./middleware/error.middleware";
+import { notFoundHandler } from "./middleware/not-found.middleware";
+
 dotenv.config();
 
 /**
@@ -31,6 +34,11 @@ app.use(express.json());
 
 // test user-service
 app.use("/addUser", addUser);
+
+app.use(errorHandler);
+app.use(notFoundHandler);
+
+
 /**
  *  Firestore initialization
  */
