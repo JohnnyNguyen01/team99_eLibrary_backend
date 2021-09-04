@@ -3,7 +3,7 @@
  */
 import express, { Request, Response } from "express";
 import * as UserService from "../services/user.service";
-import User, { UserType } from "../models/user.model";
+import User from "../models/user.model";
 
 /**
  * Router Definition
@@ -16,13 +16,16 @@ export const usersRouter = express.Router();
 
 // Create User
 export const addUser = usersRouter.post(
-  "/addUser",
+  "/add-user",
   async (req: Request, res: Response) => {
     try {
-      const response = UserService.createUser(req.body);
-      res.status(201).json(response);
+      const userReq: User = req.body;
+      const result = await UserService.createUser(userReq);
+      res.status(201).json(res);
+      return res.send(result.message);
     } catch (error) {
       console.log(error);
+      return res.send(`Call was unsuccessful: ${error}`);
     }
   }
 );
