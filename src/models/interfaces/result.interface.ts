@@ -12,4 +12,9 @@ export default interface IResult {
    * The result message
    */
   message?: string;
+
+  /**
+   * The payload obtained
+   */
+  payload?: any;
 }
