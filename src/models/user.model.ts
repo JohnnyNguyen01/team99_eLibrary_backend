@@ -26,18 +26,8 @@ export default class User implements IUser {
   @IsAlpha()
   @IsNotEmpty()
   public lastName?: string;
+
   @IsBoolean()
   @IsNotEmpty()
   isAdmin?: boolean;
 }
-
-/**
- * User Type
- */
-export type UserType = {
-  uid?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  isAdmin?: boolean;
-};
