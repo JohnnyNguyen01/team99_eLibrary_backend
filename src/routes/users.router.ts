@@ -14,7 +14,9 @@ export const usersRouter = express.Router();
  * Controller Definitions
  */
 
-// Create User
+/**
+ * Route to add a user to the database
+ */
 export const addUser = usersRouter.post(
   "/add-user",
   async (req: Request, res: Response) => {
@@ -30,7 +32,21 @@ export const addUser = usersRouter.post(
   }
 );
 
-// GET items
+/**
+ * Route to retrieve a user from the databases via the uid
+ */
+export const getUserByUID = usersRouter.get(
+  "/getUserById/:uid",
+  async (req: Request, res: Response) => {
+    try {
+      const uid = req.params;
+      const result = await UserService.getUserByUID(uid.uid);
+      res.send(`${result.message} \n payload: ${result.payload}`);
+    } catch (error) {
+      res.send(error);
+    }
+  }
+);
 
 // GET items/:id
 

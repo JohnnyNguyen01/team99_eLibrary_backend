@@ -7,6 +7,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { usersRouter } from "./routes/users.router";
+import { booksRouter } from "./routes/books.router";
 
 dotenv.config();
 
@@ -48,8 +49,9 @@ firebaseAdmin.initializeApp({
 export const db: FirebaseFirestore.Firestore = firebaseAdmin.firestore();
 db.settings({ timestampsInSnapshots: true });
 
-// test user-service
+// define routes
 app.use(usersRouter);
+app.use(booksRouter);
 
 /**
  * Server Activations
