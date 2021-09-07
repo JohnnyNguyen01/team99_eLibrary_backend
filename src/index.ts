@@ -35,6 +35,7 @@ app.use(express.json());
 // test user-service
 app.use("/addUser", addUser);
 
+// must come last, calling error pages
 app.use(errorHandler);
 app.use(notFoundHandler);
 
