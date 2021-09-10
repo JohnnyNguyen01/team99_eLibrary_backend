@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import * as BookService from "../services/books.service";
 import Book from "../models/book.model";
-import Result from "../models/result.model";
 
 // books router
 export const booksRouter = express.Router();

@@ -16,5 +16,5 @@ export default interface IResult {
   /**
    * The payload obtained
    */
-  payload?: any;
+  payload?: unknown;
 }

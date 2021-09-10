@@ -1,6 +1,8 @@
-// TODO: Find out how to use this in process.env [Johnny]
+import * as dotenv from "dotenv";
+import * as serviceAccountRaw from "../serviceAccount.json";
 
-const firebaseConfig = {
+dotenv.config();
+export const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -9,4 +11,8 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
 };
 
-const PORT: number = parseInt(process.env.PORT as string, 10);
+export const PORT: number = parseInt(process.env.PORT as string, 10);
+
+export const FIREBASE_SERVICE_ACCOUNT = JSON.parse(
+  JSON.stringify(serviceAccountRaw)
+);
