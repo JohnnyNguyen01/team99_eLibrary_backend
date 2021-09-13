@@ -1,11 +1,12 @@
 // src/middleware/error.middleware.ts
 
-// a variable that contains specific information relevant to 400 Errors
-// it is structured using the http-exception.ts class
-
 import HttpException from "../common/http-exception";
 import { Request, Response, NextFunction } from "express";
 
+/**
+ * a variable that contains specific information relevant to 400 Errors
+ * it is structured using the http-exception.ts class
+ */
 export const errorHandler = (
   error: HttpException,
   request: Request,

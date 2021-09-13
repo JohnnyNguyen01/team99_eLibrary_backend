@@ -1,6 +1,8 @@
 // src/common/http-exception.ts
 
-// Class that contains the format for which middleware error pages are displayed
+/**
+ * Class that contains the format for which middleware error pages are displayed
+*/
 export default class HttpException extends Error {
   statusCode?: number;
   status?: number;
