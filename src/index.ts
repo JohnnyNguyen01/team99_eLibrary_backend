@@ -1,28 +1,26 @@
 /**
  * Required External Modules
  */
-import * as firestore from "@google-cloud/firestore";
-import * as dotenv from "dotenv";
+import firebaseAdmin from "firebase-admin";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-
-import { addUser, usersRouter } from "./routes/users.router";
-
+import { usersRouter } from "./routes/users.router";
+import { booksRouter } from "./routes/books.router";
+import { authRouter } from "./routes/auth.router";
+import { firebaseConfig, FIREBASE_SERVICE_ACCOUNT, PORT } from "./config";
+import { initializeApp } from "firebase/app";
 import { errorHandler } from "./middleware/error.middleware";
 import { notFoundHandler } from "./middleware/not-found.middleware";
-
-dotenv.config();
 
 /**
  * App Variables
  */
-if (!process.env.PORT) {
+
+if (!PORT) {
   process.exit(1);
 }
 
-const PORT: number = parseInt(process.env.PORT as string, 10);
-const firebaseAdmin = require("firebase-admin");
 const app = express();
 
 /**
@@ -30,10 +28,8 @@ const app = express();
  */
 app.use(helmet());
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// test user-service
-app.use("/addUser", addUser);
 
 // must come last, calling error pages
 app.use(errorHandler);
@@ -41,11 +37,21 @@ app.use(notFoundHandler);
 
 /**
  *  Firestore initialization
+ * TODO: Refactor and put into somewhere correct [Johnny]
  */
-firebaseAdmin.initializeApp({ Credential: process.env.TEAM99_GCP_KEY });
+
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert(FIREBASE_SERVICE_ACCOUNT),
+});
+export const firebaseApp = initializeApp(firebaseConfig);
 export const db: FirebaseFirestore.Firestore = firebaseAdmin.firestore();
+export const auth: firebaseAdmin.auth.Auth = firebaseAdmin.auth();
 db.settings({ timestampsInSnapshots: true });
-export default db;
+
+// define routes
+app.use(usersRouter);
+app.use(booksRouter);
+app.use(authRouter);
 
 /**
  * Server Activations
