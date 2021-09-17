@@ -10,6 +10,8 @@ import { booksRouter } from "./routes/books.router";
 import { authRouter } from "./routes/auth.router";
 import { firebaseConfig, FIREBASE_SERVICE_ACCOUNT, PORT } from "./config";
 import { initializeApp } from "firebase/app";
+import { errorHandler } from "./middleware/error.middleware";
+import { notFoundHandler } from "./middleware/not-found.middleware";
 
 /**
  * App Variables
@@ -28,6 +30,10 @@ app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// must come last, calling error pages
+app.use(errorHandler);
+app.use(notFoundHandler);
 
 /**
  *  Firestore initialization
