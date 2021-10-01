@@ -48,6 +48,53 @@ export const getUserByUID = usersRouter.get(
   }
 );
 
+
+/**
+ * Route to delete a user from the databases via the uid
+ */
+export const deleteUserByUID = usersRouter.delete(
+  "/deleteUserById/:uid",
+  async (req: Request, res: Response) => {
+    try {
+      const uid = req.params;
+      const result = await UserService.deleteUserByUID(uid.uid);
+      res.send(`${result.message} \n payload: ${result.payload}`);
+    } catch (error) {
+      res.send(error);
+    }
+  }
+);
+
+/**
+ * Route to delete a user from the databases via the uid
+ */
+export const deleteAllUsers = usersRouter.delete(
+  "/deleteAllUsers",
+  async (req: Request, res: Response) => {
+    try {
+      const result = await UserService.deleteAllUsers();
+      res.send(`${result.message} \n payload: ${result.payload}`);
+    } catch (error) {
+      res.send(error);
+    }
+  }
+);
+
+/**
+ * Route to delete a user from the databases via the uid
+ */
+export const getAllUsers = usersRouter.get(
+  "/getAllUsers",
+  async (req: Request, res: Response) => {
+    try {
+      const result = await UserService.getAllUsers();
+      res.send(`${result.message} \n payload: ${result.payload}`);
+    } catch (error) {
+      res.send(error);
+    }
+  }
+);
+
 // GET items/:id
 
 // POST items

@@ -49,3 +49,62 @@ export const getUserByUID = async (uid?: string): Promise<Result> => {
   } catch (error) {}
   return new Result(-1, "Something wrong happened!", null);
 };
+
+/**
+ * deletes a user via their uid
+ * @param uid - the User's unique ID
+ */
+export const deleteUserByUID = async (uid?: string): Promise<Result> => {
+  try {
+    if (uid != null) {
+      const result = await db.collection(USERS_COLLECTION).doc(uid).delete();
+      return new Result(200, "User deleted", result);
+    } else {
+      return new Result(-1, "Uid was null or incorrectly formatted", null);
+    }
+  } catch (e) {
+    console.log(e)
+    return new Result(-1, "Something wrong happened! - deleteUserByUID()", null);
+  }
+};
+
+/**
+ * deletes All Users
+ */
+export const deleteAllUsers = async () => {
+  try {
+    const usersCollectionSnapshot = await db.collection(USERS_COLLECTION).get();
+    if (usersCollectionSnapshot.size === 0) {
+      return new Result(200, "No Users to be delted.", null);
+    }
+    const dbBatch = db.batch();
+    usersCollectionSnapshot.forEach((doc) => dbBatch.delete(doc.ref));
+    await dbBatch.commit();
+    return new Result(
+      200,
+      "All users have been successfully deleted.",
+      null
+    );
+  } catch (error) {
+    console.log(error)
+    return new Result(401, "Something went wrong! - deleteAllUsers()", null);
+  }
+};
+
+/**
+ * Fetch all users in the user collection.
+ */
+export const getAllUsers = async () => {
+  var userList: User[] = [];
+  try {
+    const usersDocList = await db.collection(USERS_COLLECTION).listDocuments();
+    usersDocList.forEach(async (userSnapshot) => {
+      const user = await userSnapshot.get();
+      userList.push(user.data as User);
+    });
+    return new Result(200, "success", userList);
+  } catch (error) {
+    console.log(error)
+    return new Result(400, "Error retrieiving users", null);
+  }
+};
