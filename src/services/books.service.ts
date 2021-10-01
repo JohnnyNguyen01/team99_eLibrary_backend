@@ -10,14 +10,14 @@ import Result from "../models/result.model";
  * @returns a `Result` where if successful, a docRef is returned.
  */
 export const addBook = async (book: Book): Promise<Result> => {
-  var response: Result;
+  let response: Result;
   try {
-    let uid = uuidv4();
+    const uid = uuidv4();
     book.uid = uid;
     const docRef = await db.collection(BOOKS_COLLECTION).doc(uid).set(book);
     response = new Result(200, "Book successfully added!", docRef);
   } catch (error) {
-    response = new Result(-1, error, null);
+    response = new Result(-1, `${error}`, null);
   }
   return response;
 };
@@ -27,7 +27,7 @@ export const addBook = async (book: Book): Promise<Result> => {
  * @param uid - the book's id
  */
 export const removeBookById = async (uid: string): Promise<Result> => {
-  var response: Result;
+  let response: Result;
   try {
     if (uid != null) {
       const result = await db.collection(BOOKS_COLLECTION).doc(uid).delete();
@@ -36,7 +36,7 @@ export const removeBookById = async (uid: string): Promise<Result> => {
       response = new Result(400, "no or incorrect uid provided", null);
     }
   } catch (error) {
-    response = new Result(400, error, null);
+    response = new Result(400, `${error}`, null);
   }
   return response;
 };
@@ -45,13 +45,12 @@ export const removeBookById = async (uid: string): Promise<Result> => {
  * Deletes the entire `Books` collection from Firebase.
  * @returns A result of the query
  */
-export const deleteAllBooks = async () => {
-  var response: Result;
+export const deleteAllBooks = async (): Promise<Result> => {
+  let response: Result;
   try {
     const booksCollectionSnapshot = await db.collection(BOOKS_COLLECTION).get();
     if (booksCollectionSnapshot.size === 0) {
-      response = new Result(200, "No Books to be delted.", null);
-      return;
+      return new Result(200, "No Books to be delted.", null);
     }
     const dbBatch = db.batch();
     booksCollectionSnapshot.forEach((doc) => dbBatch.delete(doc.ref));
@@ -62,7 +61,7 @@ export const deleteAllBooks = async () => {
       null
     );
   } catch (error) {
-    response = new Result(401, error, null);
+    response = new Result(401, `${error}`, null);
   }
   return response;
 };
@@ -73,23 +72,18 @@ export const deleteAllBooks = async () => {
  * @param book - The details of the book it needed to be updated with
  * @returns the result of the query.
  */
-export const updateBook = async (uid: string, book: Book) => {
-  var response: Result;
+export const updateBook = async (uid: string, book: Book): Promise<Result> => {
+  let response: Result;
   console.log(book);
 
   try {
     if (book.uid !== uid) {
-      response = new Result(
-        400,
-        "Document uid and Book uid do not match ",
-        null
-      );
-      return;
+      return new Result(400, "Document uid and Book uid do not match ", null);
     }
     await db.collection(BOOKS_COLLECTION).doc(uid).update(book);
     response = new Result(200, `Successfully updated book: ${uid}`, null);
   } catch (error) {
-    response = new Result(400, error, null);
+    response = new Result(400, `${error}`, null);
   }
   return response;
 };
@@ -99,7 +93,7 @@ export const updateBook = async (uid: string, book: Book) => {
  * @param uid - the book's id
  */
 export const fetchBookById = async (uid: string): Promise<Result> => {
-  var response: Result;
+  let response: Result;
   try {
     if (uid != null) {
       const result = await db.collection(BOOKS_COLLECTION).doc(uid).get();
@@ -109,7 +103,7 @@ export const fetchBookById = async (uid: string): Promise<Result> => {
       response = new Result(400, "no or incorrect uid provided", null);
     }
   } catch (error) {
-    response = new Result(400, error, null);
+    return new Result(400, `${error}`, null);
   }
   return response;
 };
@@ -120,8 +114,8 @@ export const fetchBookById = async (uid: string): Promise<Result> => {
  * NOTE: Will become inefficient, don't use in favor of Algolia search.
  */
 export const fetchAllBooks = async (): Promise<Result> => {
-  var result: Result;
-  var bookList: Book[] = [];
+  let result: Result;
+  const bookList: Book[] = [];
   try {
     const booksDocList = await db.collection(BOOKS_COLLECTION).listDocuments();
     booksDocList.forEach(async (bookSnapshot) => {

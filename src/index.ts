@@ -2,28 +2,19 @@
  * Required External Modules
  */
 import firebaseAdmin from "firebase-admin";
-import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { usersRouter } from "./routes/users.router";
 import { booksRouter } from "./routes/books.router";
-
-dotenv.config();
+import { authRouter } from "./routes/auth.router";
+import { firebaseConfig, FIREBASE_SERVICE_ACCOUNT, PORT } from "./config";
+import { initializeApp } from "firebase/app";
 
 /**
  * App Variables
  */
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-};
 
-const PORT: number = parseInt(process.env.PORT as string, 10);
 if (!PORT) {
   process.exit(1);
 }
@@ -42,16 +33,19 @@ app.use(express.json());
  *  Firestore initialization
  * TODO: Refactor and put into somewhere correct [Johnny]
  */
-const serviceAccount = require("../serviceAccount.json");
+
 firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert(serviceAccount),
+  credential: firebaseAdmin.credential.cert(FIREBASE_SERVICE_ACCOUNT),
 });
+export const firebaseApp = initializeApp(firebaseConfig);
 export const db: FirebaseFirestore.Firestore = firebaseAdmin.firestore();
+export const auth: firebaseAdmin.auth.Auth = firebaseAdmin.auth();
 db.settings({ timestampsInSnapshots: true });
 
 // define routes
 app.use(usersRouter);
 app.use(booksRouter);
+app.use(authRouter);
 
 /**
  * Server Activations
